@@ -1,0 +1,21 @@
+---
+- name: gather required facts
+  setup:
+    gather_subset: [virtual]
+  when: ansible_virtualization_type is not defined
+
+- name: load and enable modules
+  modprobe:
+    name: "{{ item.name }}"
+    state: "{{ item.state | default('present') }}"
+  loop: "{{ modules | default([]) }}"
+  when: ansible_virtualization_type != "lxc"
+
+- name: add kernel modules to load at boot time
+  template:
+    src: templates/etc_modules.j2
+    dest: /etc/modules
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_virtualization_type != "lxc"

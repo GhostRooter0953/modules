@@ -1,0 +1,4 @@
+{% for module in modules|default([]) %}
+{{ module.name }}{% if module.arg is defined %} {{ module.arg }}{% endif %}
+
+{% endfor %}
